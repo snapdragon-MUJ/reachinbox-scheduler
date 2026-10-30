@@ -45,7 +45,8 @@ app.use('/admin/queues', serverAdapter.getRouter());
 
 app.post('/api/schedule', async (req, res) => {
   try {
-    const { userId, senderEmail, recipients, subject, body, scheduledFor, minDelayMs, hourlyLimit } = req.body;
+    const { userId, senderEmail: rawSenderEmail, recipients, subject, body, scheduledFor, minDelayMs, hourlyLimit } = req.body;
+    const senderEmail = rawSenderEmail || ((userId && userId.includes("@")) ? userId : "noreply@reachinbox.ai");
     const targetDate = scheduledFor ? new Date(scheduledFor) : new Date();
     const now = Date.now();
     const initialDelay = Math.max(0, targetDate.getTime() - now);
